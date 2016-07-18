@@ -1,30 +1,32 @@
 package ca.burnison.configuration;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * This test needs to be run by Maven (or manually) to get the config.
  */
-public final class SystemPropertiesSourceTest {
-    @Test
-    public void get() {
-        final SystemPropertiesSource source = new SystemPropertiesSource();
-        Assert.assertEquals("44.4", source.get("proptest.stuff"));
-        Assert.assertNull(source.get("proptest.notpresent"));
+public final class SystemPropertiesSourceTest extends SourceTester {
+
+    @Override
+    protected Source getSource() {
+        return new SystemPropertiesSource();
     }
 
-    @Test
-    public void getOrDefault() {
-        final SystemPropertiesSource source = new SystemPropertiesSource();
-        Assert.assertEquals("44.4", source.getOrDefault("proptest.stuff", "99"));
-        Assert.assertEquals("99", source.getOrDefault("proptest.notpresent", "99"));
+    @Override
+    protected Source getSource(final KeyTransformer keyx) {
+        return new SystemPropertiesSource(keyx);
     }
 
-    @Test
-    public void contains() {
-        final SystemPropertiesSource source = new SystemPropertiesSource();
-        Assert.assertTrue(source.contains("proptest.stuff"));
-        Assert.assertFalse(source.contains("proptest.notpresent"));
+    @Override
+    protected String keyPresent() {
+        return "proptest.stuff";
+    }
+
+    @Override
+    protected String valuePresent() {
+        return "44.4";
+    }
+
+    @Override
+    protected String keyAbsent() {
+        return "proptest.missing";
     }
 }

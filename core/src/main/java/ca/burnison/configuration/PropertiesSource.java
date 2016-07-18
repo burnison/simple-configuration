@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
  * backing store is a blocking collection, when performance is critical, you may
  * wish to convert the properties into a different collection type.
  */
-public final class PropertiesSource implements Source {
+public final class PropertiesSource extends BaseSource implements Source {
     private final Properties properties;
 
     /**
@@ -23,26 +23,29 @@ public final class PropertiesSource implements Source {
     }
 
     /**
-     * {@inheritDoc}
+     * Create a new istance with the specified properties and key transformer.
+     *
+     * @param properties The backing properties to use.
+     * @param keyTransformer A transformer to apply to keys prior to lookup.
+     * @throws NullPointerException If any argument is null.
      */
+    public PropertiesSource(@Nonnull final Properties properties, @Nonnull final KeyTransformer keyTransformer) {
+        super(keyTransformer);
+        this.properties = Objects.requireNonNull(properties, "A non-null properties object must be provided.");
+    }
+
     @Override
-    public boolean contains(final String key) {
+    protected boolean containsMapped(final String key) {
         return this.properties.containsKey(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String get(final String key) {
+    protected String getMapped(final String key) {
         return Objects.toString(this.properties.get(key), null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String getOrDefault(final String key, final String defaultValue) {
+    protected String getOrDefaultMapped(final String key, final String defaultValue) {
         return Objects.toString(this.properties.getOrDefault(key, defaultValue), null);
     }
 }

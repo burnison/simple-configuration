@@ -1,33 +1,36 @@
 package ca.burnison.configuration;
 
 import java.util.Properties;
-import org.junit.Assert;
-import org.junit.Test;
 
-public final class PropertiesSourceTest {
+public final class PropertiesSourceTest extends SourceTester {
     private final Properties properties = new Properties();
+
     {
-        properties.setProperty("test", "yup");
+        properties.setProperty("test.property", "yup");
     }
 
-    @Test
-    public void get() {
-        final PropertiesSource source = new PropertiesSource(properties);
-        Assert.assertEquals("yup", source.get("test"));
-        Assert.assertNull(source.get("missing"));
+    @Override
+    protected Source getSource() {
+        return new PropertiesSource(properties);
     }
 
-    @Test
-    public void getOrDefault() {
-        final PropertiesSource source = new PropertiesSource(properties);
-        Assert.assertEquals("yup", source.getOrDefault("test", "99"));
-        Assert.assertEquals("99", source.getOrDefault("missing", "99"));
+    @Override
+    protected Source getSource(final KeyTransformer keyx) {
+        return new PropertiesSource(properties, keyx);
     }
 
-    @Test
-    public void contains() {
-        final PropertiesSource source = new PropertiesSource(properties);
-        Assert.assertTrue(source.contains("test"));
-        Assert.assertFalse(source.contains("missing"));
+    @Override
+    protected String keyPresent() {
+        return "test.property";
+    }
+
+    @Override
+    protected String valuePresent() {
+        return "yup";
+    }
+
+    @Override
+    protected String keyAbsent() {
+        return "test.missing";
     }
 }

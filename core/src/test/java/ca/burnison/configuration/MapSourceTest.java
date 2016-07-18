@@ -5,7 +5,12 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-public final class MapSourceTest {
+public final class MapSourceTest extends SourceTester {
+
+    private final Map<String, String> map = new HashMap<>();
+    {
+        map.put("map.prop", "33.333333");
+    }
 
     @Test
     public void new_immutableCopy() {
@@ -15,39 +20,28 @@ public final class MapSourceTest {
         Assert.assertNull(source.get("c"));
     }
 
-    @Test
-    public void get() {
-        final Map<String, String> map = new HashMap<>();
-        map.put("a", "A");
-        map.put("b", "B");
-
-        final MapSource source = new MapSource(map);
-        Assert.assertEquals("A", source.get("a"));
-        Assert.assertEquals("B", source.get("b"));
-        Assert.assertNull(source.get("c"));
+    @Override
+    protected Source getSource() {
+        return new MapSource(map);
     }
 
-    @Test
-    public void getOrDefault() {
-        final Map<String, String> map = new HashMap<>();
-        map.put("a", "A");
-        map.put("b", "B");
-
-        final MapSource source = new MapSource(map);
-        Assert.assertEquals("A", source.getOrDefault("a", "missing"));
-        Assert.assertEquals("B", source.getOrDefault("b", "missing"));
-        Assert.assertEquals("missing", source.getOrDefault("c", "missing"));
+    @Override
+    protected Source getSource(final KeyTransformer keyx) {
+        return new MapSource(map, keyx);
     }
 
-    @Test
-    public void contains() {
-        final Map<String, String> map = new HashMap<>();
-        map.put("a", "A");
-        map.put("b", "B");
+    @Override
+    protected String keyPresent() {
+        return "map.prop";
+    }
 
-        final MapSource source = new MapSource(map);
-        Assert.assertTrue("A", source.contains("a"));
-        Assert.assertTrue("B", source.contains("b"));
-        Assert.assertFalse(source.contains("c"));
+    @Override
+    protected String valuePresent() {
+        return "33.333333";
+    }
+
+    @Override
+    protected String keyAbsent() {
+        return "map.prop.missing";
     }
 }

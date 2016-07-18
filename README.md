@@ -9,15 +9,8 @@ JVM-based languages.
     <artifactId>config-core</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
-
-<!-- For use of TestRepository in unit tests. -->
-<dependency>
-    <groupId>ca.burnison.configuration</groupId>
-    <artifactId>config-test</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <scope>test</scope>
-</dependency>
 ```
+
 
 # Usage
 
@@ -136,6 +129,28 @@ page and will only be recomputed if the underlying property, `my.page.title`
 is changed in some source.
 
 
+
+# Example: Key Transformations
+
+Sometimes, different sources make keys available differently. For example, shell
+environment variables are often formatted as `SOME_VARIABLE_NAME`, whereas
+system properties are often formatted as `some.variable.name`. To reconcile this
+issue, most repositories accept a `KeyTransformer`, which will transform the
+key prior to a look-up.
+
+
+```java
+final Source source = ChainedSource.linking(
+    new SystemPropertiesSource(),
+    new EnvVarSource(s -> s.toUpperCase().replace('.', '_'))
+);
+```
+
+The above example modifies the `EnvVarSource` to transform system property style
+keys into envvar style keys.
+
+
+
 # Example: Unwrapping & Caching
 
 In some instances, you may wish to use a property to deserialize some specific
@@ -171,8 +186,19 @@ the `cached` method is called, which caches the transformed result.
 # Example: Testing
 
 For simplified testing, the `config-test` module offers a simple `TestSource`
-class. This source may be used liberally withouth having to mock, stub, or have
-a complex test set-up.
+class.
+
+```
+<dependency>
+    <groupId>ca.burnison.configuration</groupId>
+    <artifactId>config-test</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <scope>test</scope>
+</dependency>
+```
+
+This source may be used liberally without having to mock, stub, or have
+a complex test set-up:
 
 ```java
 final Repository repo = TestRepository.initially("first.property", "something")

@@ -99,6 +99,10 @@ of transformations:
 
 *   `coalesced` - Swaps a *present*, `null` property with a default value.
 
+*   `tested` - Force the property to apply its transformation pipeline to the
+    current source values. This will trigger validation exceptions and set-up
+    caching.
+
 *   `frozen` - Snapshots the current property value and continually replays it.
 
 *   `cached` - Snapshots the current property value and continually replays it

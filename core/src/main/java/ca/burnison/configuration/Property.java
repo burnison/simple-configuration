@@ -99,6 +99,20 @@ public abstract class Property<T, P extends Property<T, P>> {
                 Objects.requireNonNull(supplier, "A non-null supplier must be provided."));
     }
 
+
+    /**
+     * A convenience method to perform a look-up on this property that will
+     * force an execution of the transformation pipeline. This may be used to
+     * force data validation, requiredness, or force a cache or freeze.
+     *
+     * @return This instance.
+     */
+    @SuppressWarnings("unchecked")
+    public final P tested() {
+        this.lookup.lookup();
+        return (P) this;
+    }
+
     /**
      * Creates a snapshot of the current value that will be used for all
      * further access. Once frozen, a property cannot be unfrozen, however,

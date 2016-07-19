@@ -75,6 +75,19 @@ public abstract class PropertyTester<T, P extends Property<T, P>> {
     }
 
     @Test
+    public void tested() {
+        Assert.assertEquals(valueA(), create(valueA()).validated(a -> true).tested().get());
+        Assert.assertNull(create(null).validated(s -> true).tested().get());
+        Assert.assertNull(create().validated(s -> true).tested().get());
+        Assert.assertNull(create().validated(s -> false).tested().get());
+    }
+
+    @Test(expected = PropertyInvalidException.class)
+    public void tested_invalid() {
+        create(valueA()).validated(s -> false).tested();
+    }
+
+    @Test
     public void required() {
         Assert.assertEquals(valueA(), create(valueA()).required().get());
         Assert.assertNull(create(null).required().get());

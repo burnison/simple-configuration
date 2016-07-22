@@ -18,7 +18,7 @@ final class RequiringLookup<T> implements Lookup<T> {
     public Result<T> lookup() {
         final Result<T> current = this.source.lookup();
         if (!current.isPresent()) {
-            throw new PropertyMissingException("Property is missing.");
+            throw new PropertyMissingException("Property " + this.name() + " is missing.");
         }
         return current;
     }

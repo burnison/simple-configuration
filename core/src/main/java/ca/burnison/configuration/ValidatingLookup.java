@@ -33,7 +33,7 @@ final class ValidatingLookup<T> implements Lookup<T> {
         if (result.isPresent()) {
             return result;
         }
-        throw new PropertyInvalidException("Property is invalid.");
+        throw new PropertyInvalidException("Property " + this.name() + " is invalid.");
     }
 
     @Override
